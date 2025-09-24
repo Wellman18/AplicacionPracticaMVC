@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FinanzaPersonalApp.Models;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace FinanzaPersonalApp.Controllers
 {
@@ -15,6 +16,7 @@ namespace FinanzaPersonalApp.Controllers
         private readonly ConnectionManagerDbContext _context;
         IConfiguration _configuration;
         private readonly HttpClient httpClient;
+        IEnumerable<Usuario> listaUsuarios = Enumerable.Empty<Usuario>();
 
         public UsuariosController(ConnectionManagerDbContext context,IConfiguration configuration, HttpClient httpClient)
         {
@@ -34,12 +36,22 @@ namespace FinanzaPersonalApp.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var content = await response.Content.ReadAsStringAsync();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                listaUsuarios = JsonSerializer.Deserialize<List<Usuario>>(content,options);
+
+                return listaUsuarios != null
+                                        ? View(listaUsuarios)
+                                        : Problem("No se pudieron deserializar los usuarios.");
 
             }
 
-              return _context.Usuarios != null ? 
-                          View(await _context.Usuarios.ToListAsync()) :
-                          Problem("Entity set 'ConnectionManagerDbContext.Usuarios'  is null.");
+            return Problem("Error al obtener datos de la API.");
         }
 
         // GET: Usuarios/Details/5
@@ -75,9 +87,37 @@ namespace FinanzaPersonalApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(usuario);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var url = _configuration.GetSection("CustomValues")
+                        .Get<List<CustomValues>>()
+                        .FirstOrDefault(x => x.key == "CrearUsuario")?.value;
+
+                var response = await httpClient.PostAsJsonAsync(url, usuario);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    //var content = await response.Content.ReadAsStringAsync();
+
+                    //var options = new JsonSerializerOptions
+                    //{
+                    //    PropertyNameCaseInsensitive = true
+                    //};
+
+                    //listaUsuarios = JsonSerializer.Deserialize<List<Usuario>>(content, options);
+
+                    //return listaUsuarios != null
+                    //                        ? View(listaUsuarios)
+                    //                        : Problem("No se pudieron deserializar los usuarios.");
+
+                    //_context.Add(usuario);
+                    //await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+
+
+
+                }
+
+
             }
             return View(usuario);
         }
