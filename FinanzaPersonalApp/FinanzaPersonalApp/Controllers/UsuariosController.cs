@@ -6,21 +6,37 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FinanzaPersonalApp.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace FinanzaPersonalApp.Controllers
 {
     public class UsuariosController : Controller
     {
         private readonly ConnectionManagerDbContext _context;
+        IConfiguration _configuration;
+        private readonly HttpClient httpClient;
 
-        public UsuariosController(ConnectionManagerDbContext context)
+        public UsuariosController(ConnectionManagerDbContext context,IConfiguration configuration, HttpClient httpClient)
         {
             _context = context;
+            _configuration = configuration;
+            this.httpClient = httpClient;
         }
 
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
+            var url = _configuration.GetSection("CustomValues")
+                                    .Get<List<CustomValues>>()
+                                    .FirstOrDefault(x=> x.key== "ObtenerUsuario")?.value;
+
+            var response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+
+            }
+
               return _context.Usuarios != null ? 
                           View(await _context.Usuarios.ToListAsync()) :
                           Problem("Entity set 'ConnectionManagerDbContext.Usuarios'  is null.");

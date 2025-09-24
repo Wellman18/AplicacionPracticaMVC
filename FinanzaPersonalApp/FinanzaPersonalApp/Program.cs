@@ -6,6 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//using var response = await new HttpClient().GetAsync("appsettings.json");
+//using var stream = await response.Content.ReadAsStreamAsync();
+//builder.Configuration.AddJsonStream(stream);
+builder.Services.AddScoped<HttpClient>();
 builder.Services.AddDbContext<ConnectionManagerDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

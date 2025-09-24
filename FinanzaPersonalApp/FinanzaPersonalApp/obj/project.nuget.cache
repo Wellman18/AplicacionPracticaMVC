@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "tOXQ5xQqdB5NVnufsp/0cXcU2AZXj5wIGzNQmmnhUNYOtGAwmKi+lGHzg/GmSSam3XxFMCvxVe4sb5ILzitC0w==",
+  "dgSpecHash": "uuTGpDdRU8n48zLzH4xy3bjJcrTbTD14kZBPPJAwDHw6VXRAnYabMKBNnIWzjtiyrvb1OW+ypplhOCXG0fqVcw==",
   "success": true,
   "projectFilePath": "C:\\RepoApi\\AplicacionMVC\\AplicacionPracticaMVC\\FinanzaPersonalApp\\FinanzaPersonalApp\\FinanzaPersonalApp.csproj",
   "expectedPackageFiles": [
@@ -85,6 +85,7 @@
     "C:\\Users\\Wellman Aranda\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\7.0.20\\microsoft.entityframeworkcore.tools.7.0.20.nupkg.sha512",
     "C:\\Users\\Wellman Aranda\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\Wellman Aranda\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
+    "C:\\Users\\Wellman Aranda\\.nuget\\packages\\microsoft.extensions.configuration\\7.0.0\\microsoft.extensions.configuration.7.0.0.nupkg.sha512",
     "C:\\Users\\Wellman Aranda\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\Wellman Aranda\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
     "C:\\Users\\Wellman Aranda\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
