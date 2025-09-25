@@ -207,19 +207,35 @@ namespace FinanzaPersonalApp.Controllers
         // POST: Usuarios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, [Bind("Id")] Usuario _usuario)
         {
             if (_context.Usuarios == null)
             {
                 return Problem("Entity set 'ConnectionManagerDbContext.Usuarios'  is null.");
             }
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario != null)
+            //var usuario = await _context.Usuarios.FindAsync(id);
+
+            /*usuario != null*/
+            if (id == _usuario.Id)
             {
-                _context.Usuarios.Remove(usuario);
+                //_context.Usuarios.Remove(usuario);
+
+                var url = _configuration.GetSection("CustomValues")
+                            .Get<List<CustomValues>>()
+                            .FirstOrDefault(x => x.key == "EliminarUsuario")?.value;
+
+                var response = await httpClient.PostAsJsonAsync(url, _usuario);
             }
-            
-            await _context.SaveChangesAsync();
+
+            //await _context.SaveChangesAsync();
+
+
+            //var url = _configuration.GetSection("CustomValues")
+            //            .Get<List<CustomValues>>()
+            //            .FirstOrDefault(x => x.key == "EliminarUsuario")?.value;
+
+            //var response = await httpClient.PostAsJsonAsync(url, usuario);
+
             return RedirectToAction(nameof(Index));
         }
 
