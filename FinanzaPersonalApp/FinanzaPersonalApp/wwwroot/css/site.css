@@ -20,4 +20,14 @@ html {
 body {
     margin-bottom: 60px;
     font-family: "PT Serif", serif;
+/*    background: #313D52;*/
+}
+
+.navbar .nav-link:hover {
+    transition: all .3s !important;
+    background: #41BCF1 !important;
+}
+
+nav.navbar {
+    background: #2CAEE7 !important;
 }
