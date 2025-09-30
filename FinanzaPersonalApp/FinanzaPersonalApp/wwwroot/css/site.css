@@ -45,3 +45,25 @@ nav.navbar {
 h1{
     display:inline;
 }
+
+table thead {
+    background-color: #246355;
+    color: white;
+    border-bottom: solid 5px #0F362D;
+}
+
+table {
+    background-color:white;
+    margin-top:3%;
+
+}
+
+tr:nth-child(even) {
+    background-color: #ddd;
+}
+
+tr:hover td{
+    background-color:#369681;
+    color:white;
+}
+
