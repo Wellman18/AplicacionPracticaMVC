@@ -17,6 +17,8 @@ namespace FinanzaPersonalApp.Controllers
         IConfiguration _configuration;
         private readonly HttpClient httpClient;
         IEnumerable<Usuario> listaUsuarios = Enumerable.Empty<Usuario>();
+        Usuario modelUsuario;
+      
 
         public UsuariosController(ConnectionManagerDbContext context,IConfiguration configuration, HttpClient httpClient)
         {
@@ -129,17 +131,41 @@ namespace FinanzaPersonalApp.Controllers
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Usuarios == null)
+            modelUsuario = new();
+
+            var url = _configuration.GetSection("CustomValues")
+                        .Get<List<CustomValues>>()
+                        .FirstOrDefault(x => x.key == "ObtenerUsuario")?.value;
+
+            var response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                var content = await response.Content.ReadAsStringAsync();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var listadoUsuarios = JsonSerializer.Deserialize<List<Usuario>>(content, options);
+
+                modelUsuario = listadoUsuarios.FirstOrDefault(x => x.Id == id);
             }
 
-            var usuario = await _context.Usuarios.FindAsync(id);
-            if (usuario == null)
+
+
+            //if (id == null || _context.Usuarios == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var usuario = await _context.Usuarios.FindAsync(id);
+            if (modelUsuario == null)
             {
                 return NotFound();
             }
-            return View(usuario);
+            return View(modelUsuario);
         }
 
         // POST: Usuarios/Edit/5
@@ -147,12 +173,13 @@ namespace FinanzaPersonalApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Correo")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, /*[Bind("Id,Nombre,Correo")]*/[FromBody] Usuario usuario)
         {
-            if (id != usuario.Id)
-            {
-                return NotFound();
-            }
+            //if (id != usuario.Id)
+            //{
+            //    return NotFound();
+            //}
+            usuario.Id= id;
 
             if (ModelState.IsValid)
             {
