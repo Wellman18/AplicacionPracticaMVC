@@ -208,55 +208,128 @@ namespace FinanzaPersonalApp.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(Index));
+                    //return RedirectToAction(nameof(Index));
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    //return NotFound(response.StatusCode);
                 }
 
 
                 
             }
-            return View(usuario);
+            //return View(usuario);
+            return Json(new { success = false, message = "Error al editar usuario" });
         }
 
         // GET: Usuarios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Usuarios == null)
+            //if (id == null || _context.Usuarios == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var usuario = await _context.Usuarios
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            //if (usuario == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return View(usuario);
+
+
+
+
+            modelUsuario = new();
+
+            var url = _configuration.GetSection("CustomValues")
+                        .Get<List<CustomValues>>()
+                        .FirstOrDefault(x => x.key == "ObtenerUsuario")?.value;
+
+            var response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var listadoUsuarios = JsonSerializer.Deserialize<List<Usuario>>(content, options);
+
+                modelUsuario = listadoUsuarios.FirstOrDefault(x => x.Id == id);
+            }
+
+
+
+            //if (id == null || _context.Usuarios == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var usuario = await _context.Usuarios.FindAsync(id);
+            if (modelUsuario == null)
             {
                 return NotFound();
             }
-
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            return View(usuario);
+            return View(modelUsuario);
         }
 
         // POST: Usuarios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id, [Bind("Id")] Usuario _usuario)
+        public async Task<IActionResult> DeleteConfirmed( /*[Bind("Id")]*/[FromBody] Usuario _usuario)
         {
-            if (_context.Usuarios == null)
-            {
-                return Problem("Entity set 'ConnectionManagerDbContext.Usuarios'  is null.");
-            }
-            //var usuario = await _context.Usuarios.FindAsync(id);
+            //_usuario.Id = id;
+            //bool respuestaExitosa = false;
 
-            /*usuario != null*/
-            if (id == _usuario.Id)
+            if (ModelState.IsValid)
             {
-                //_context.Usuarios.Remove(usuario);
-
                 var url = _configuration.GetSection("CustomValues")
                             .Get<List<CustomValues>>()
                             .FirstOrDefault(x => x.key == "EliminarUsuario")?.value;
 
                 var response = await httpClient.PostAsJsonAsync(url, _usuario);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    //respuestaExitosa = true;
+                    return Json(new { success = true });
+                }
             }
+            return Json(new { success = false, message = "Error al editar usuario" });
+
+            //if (respuestaExitosa == true)
+            //{
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //else
+            //{
+            //    return Problem("Entity set 'ConnectionManagerDbContext.Usuarios'  is null.");
+            //}
+
+            //if (_context.Usuarios == null)
+            //{
+            //    return Problem("Entity set 'ConnectionManagerDbContext.Usuarios'  is null.");
+            //}
+            //var usuario = await _context.Usuarios.FindAsync(id);
+
+            /*usuario != null*/
+            //if (id == _usuario.Id)
+            //{
+            //    //_context.Usuarios.Remove(usuario);
+
+            //    var url = _configuration.GetSection("CustomValues")
+            //                .Get<List<CustomValues>>()
+            //                .FirstOrDefault(x => x.key == "EliminarUsuario")?.value;
+
+            //    var response = await httpClient.PostAsJsonAsync(url, _usuario);
+            //}
 
             //await _context.SaveChangesAsync();
 
@@ -267,7 +340,7 @@ namespace FinanzaPersonalApp.Controllers
 
             //var response = await httpClient.PostAsJsonAsync(url, usuario);
 
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
         }
 
         private bool UsuarioExists(int id)

@@ -25,9 +25,54 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form id="formDelete" asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+       @* <input type="submit" value="Delete" class="btn btn-danger" />*@
+        <button type="submit" class="btn btn-primary">Create</button> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#formDelete").submit(function (e) {
+                e.preventDefault(); // Evita que el form se envíe normalmente
+
+                var token = $('input[name="__RequestVerificationToken"]').val(); // AntiForgeryToken
+
+                var usuario = {
+                    Id: $("#Id").val(),
+                    Nombre: "",
+                    Correo: ""
+                };
+
+                $.ajax({
+                    url: '@Url.Action("Delete", "Usuarios")', // Llama a tu controller
+                    type: "POST",
+                    headers: {
+                        "RequestVerificationToken": token // Necesario por [ValidateAntiForgeryToken]
+                    },
+                    contentType: "application/json",
+                    data: JSON.stringify(usuario),
+                    success: function (result) {
+                        // Redirigir al index si todo salió bien
+                        window.location.href = '@Url.Action("Index", "Usuarios")';
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error al eliminar usuario: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+}
+
