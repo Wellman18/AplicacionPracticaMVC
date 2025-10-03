@@ -26,7 +26,7 @@ namespace FinanzaPersonalApp.Controllers
         }
 
         // GET: Usuarios
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string?usuario)
         {
             var url = _configuration.GetSection("CustomValues")
                                     .Get<List<CustomValues>>()
@@ -83,7 +83,7 @@ namespace FinanzaPersonalApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Correo")] Usuario usuario)
+        public async Task<IActionResult> Create(/*[Bind("Id,Nombre,Correo")]*/[FromBody] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
@@ -110,7 +110,10 @@ namespace FinanzaPersonalApp.Controllers
 
                     //_context.Add(usuario);
                     //await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+
+                    //return RedirectToAction(nameof(Index));
+
+                    return Json(new { success = true });
 
 
 
@@ -119,7 +122,8 @@ namespace FinanzaPersonalApp.Controllers
 
 
             }
-            return View(usuario);
+            //return View(usuario);
+            return Json(new { success = false, message = "Error al crear usuario" });
         }
 
         // GET: Usuarios/Edit/5
